@@ -1,0 +1,17 @@
+<div class="box-border p-1 w-80">
+    <div class="flex flex-col items-center border border-black rounded">
+        <div class="w-full p-1 truncate">
+            {{ video.name }}
+        </div>
+        <div style="position: relative; padding-top: 56.25%;" class='w-full'>
+            <img *ngIf="!showVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                [src]="video.imageUrl" (click)="showVideo = true" />
+            <iframe *ngIf="showVideo" [src]="embedUrl | safe" type="text/html"
+                allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                frameborder="0"></iframe>
+        </div>
+        <div class="flex flex-row flex-wrap items-center justify-center">
+            <app-button-toggle *ngFor="let playlist of playlists" [name]="playlist.name"></app-button-toggle>
+        </div>
+    </div>
+</div>

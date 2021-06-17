@@ -1,0 +1,28 @@
+<div class="flex flex-row items-center h-8 mr-2">
+    <button class="ml-2"
+        (click)="authenticate()" *ngIf="gapiSetup && !user">
+        Grant access to Youtube
+    </button>
+    <div class="ml-2" *ngIf="user">
+        <strong>User:</strong> {{user?.getBasicProfile()?.getEmail() | json}}, {{user?.getBasicProfile()?.getId() | json}}
+    </div>
+    <button class="ml-2"
+        (click)="signOut()" *ngIf="user">
+        Sign out
+    </button>
+    <!-- <button class="ml-2"
+        (click)="handleClickSignOut" *ngIf="gapiSetup">
+        Logout
+    </button> -->
+</div>
+
+<!-- <button (click)="authenticate()" class="auth">Authenticate</button>
+<br>
+
+Is gapi loaded and ready? {{gapiSetup}}
+<br>
+
+Error: {{error|json}}
+<br>
+
+<strong>User:</strong> {{user?.getBasicProfile()?.getEmail() | json}}, {{user?.getBasicProfile()?.getId() | json}} -->

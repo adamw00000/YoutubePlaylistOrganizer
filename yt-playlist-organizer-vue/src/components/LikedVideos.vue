@@ -1,26 +1,18 @@
 <template>
-    <h2>
-        Liked videos
-    </h2>
+  <h1>
+      Liked videos
+  </h1>
   <div class="flex flex-col items-center">
-    <table>
-        <thead>
-            <th />
-            <th>Video</th>
-            <th>Url</th>
-        </thead>
-        <tbody>
-            <tr v-for="v in likedVideos" :key="v.id">
-                <td>
-                    <img :src="v.imageUrl"/>
-                </td>
-                <td>{{v.name}}</td>
-                <td>
-                    <a :href="'https://www.youtube.com/watch?v='+v.id">Link</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="flex flex-row flex-wrap items-center justify-center w-4/5 pt-4 pb-4">
+      <PlaylistEntry 
+        v-for="video of likedVideos"
+        :key="video.id"
+        :id="video.id"
+        :name="video.name"
+        :imageUrl="video.imageUrl"
+        :playlists="playlists">
+      </PlaylistEntry>
+    </div>
   </div>
 </template>
 
@@ -28,19 +20,25 @@
 import { defineComponent } from "vue";
 import { mapState, Store } from "vuex";
 import { Video } from '../models/video'
+import { PlaylistInfo } from '../models/playlistInfo'
+import PlaylistEntry from "../components/PlaylistEntry.vue";
 import YoutubeService from "../services/YoutubeService";
 
 export default defineComponent({
   name: "LikedVideos",
-  data (): { loading: false; likedVideos: Video[]; error: null; } {
+  components: {
+    PlaylistEntry,
+  },
+  data (): { loading: false; likedVideos: Video[]; playlists: PlaylistInfo[]; error: null; } {
     return {
       loading: false,
       likedVideos: [],
+      playlists: [],
       error: null
     }
   },
   created(): void {
-      this.fetchData()
+      this.fetchData();
   },
 	computed: {
     ...mapState({
@@ -71,7 +69,7 @@ export default defineComponent({
       const ytService: YoutubeService = new YoutubeService();
       
       this.likedVideos = await ytService.getLikedVideos(userId, authCode);
-      console.log(this.likedVideos);
+      this.playlists = await ytService.getPlaylists(userId, authCode);
     },
   },
 });
