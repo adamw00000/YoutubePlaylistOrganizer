@@ -7,12 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GoogleLoginComponent implements OnInit {
   public gapiSetup: boolean = false; // marks if the gapi library has been loaded
-  public authInstance: gapi.auth2.GoogleAuth | undefined;
+  public authInstance: gapi.auth2.GoogleAuth;
   public error: string;
   public user: gapi.auth2.GoogleUser | undefined;
-  public offlineAccessCode: string | undefined;
+  public authCode: string | undefined;
+  public userId: string | undefined;
+
+  private AUTH_CODE_KEY = 'authCode';
+  private USER_ID_KEY = 'userId';
 
   async ngOnInit() {
+    if (localStorage.getItem(this.AUTH_CODE_KEY) !== null)
+      this.authCode = localStorage.getItem(this.AUTH_CODE_KEY)!;
+    if (localStorage.getItem(this.USER_ID_KEY) !== null)
+      this.userId = localStorage.getItem(this.USER_ID_KEY)!;
+    
     if (await this.checkIfUserAuthenticated()) {
       this.user = this.authInstance!.currentUser.get();
     }
@@ -73,11 +82,31 @@ export class GoogleLoginComponent implements OnInit {
     // Resolve or reject signin Promise
     return new Promise(async () => {
       await this.authInstance!.grantOfflineAccess().then(
-        (result: {code: string}) => this.offlineAccessCode = result.code,
+        (result: {code: string}) => {
+          this.authCode = result.code;
+          localStorage.setItem(this.AUTH_CODE_KEY, this.authCode);
+          this.userId = this.authInstance.currentUser.get().getId();
+          localStorage.setItem(this.USER_ID_KEY, this.userId);
+        },
         (error: string) => this.error = error
       );
     });
   }
+
+  async revokeAccess(): Promise<void> {
+    if (!this.gapiSetup) {
+      return;
+    }
+
+    this.authInstance!.disconnect();
+
+    this.user = undefined;
+    this.userId = undefined;
+    localStorage.removeItem(this.USER_ID_KEY);
+    this.authCode = undefined;
+    localStorage.removeItem(this.AUTH_CODE_KEY);
+  }
+
 
   async signOut(): Promise<gapi.auth2.GoogleUser> {
     // Initialize gapi if not done yet
@@ -89,10 +118,7 @@ export class GoogleLoginComponent implements OnInit {
     return new Promise(async () => {
       await this.authInstance!.signOut().then(
         () => {
-          this.gapiSetup = false;
-          this.offlineAccessCode = undefined;
           this.user = undefined;
-          this.authInstance = undefined;
         },
         (error: string) => this.error = error
       );

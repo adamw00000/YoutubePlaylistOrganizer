@@ -1,13 +1,25 @@
 <div class="flex flex-row items-center h-8 mr-2">
-    <button class="ml-2"
-        (click)="authenticate()" *ngIf="gapiSetup && !user">
-        Grant access to Youtube
+    <button class="ml-2" (click)="authenticate()" *ngIf="gapiSetup && !user">
+        Sign in with Google
     </button>
     <div class="ml-2" *ngIf="user">
-        <strong>User:</strong> {{user?.getBasicProfile()?.getEmail() | json}}, {{user?.getBasicProfile()?.getId() | json}}
+        <!-- <strong>User:</strong> {{user?.getBasicProfile()?.getEmail() | json}}, {{user?.getBasicProfile()?.getId() | json}} -->
+        <strong>Logged in as:</strong> {{ user?.getBasicProfile()?.getEmail() }}
     </div>
-    <button class="ml-2"
-        (click)="signOut()" *ngIf="user">
+    <div class="flex flex-row ml-2" *ngIf="gapiSetup && user && (!authCode || !userId)">
+        <div class="text-red-700">
+            You didn't grant access to Youtube!
+        </div>
+        <button class="ml-2" (click)="getAuthCode()">
+            Grant access to Youtube
+        </button>
+    </div>
+    <div class="ml-2" *ngIf="gapiSetup && user && authCode && userId">
+        <button class="ml-2" (click)="revokeAccess()">
+            Sign out and revoke access
+        </button>
+    </div>
+    <button class="ml-2" (click)="signOut()" *ngIf="gapiSetup && user">
         Sign out
     </button>
     <!-- <button class="ml-2"
