@@ -1,6 +1,6 @@
 ﻿namespace YTPlaylistOrganizerCore.Models
 {
-    public class VideoData
+    public class VideoDto
     {
         public string Id { get; set; }
         public string Name { get; set; }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YTPlaylistOrganizerCore.Models;
 
-namespace YTPlaylistOrganizerCore
+namespace YTPlaylistOrganizerCore.Data
 {
     public class ApplicationDbContext: DbContext
     {

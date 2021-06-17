@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YTPlaylistOrganizerCore;
+using YTPlaylistOrganizerCore.Data;
 
 namespace YTPlaylistOrganizerCore.Migrations
 {

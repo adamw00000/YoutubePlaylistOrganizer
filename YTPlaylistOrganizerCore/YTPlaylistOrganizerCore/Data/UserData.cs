@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace YTPlaylistOrganizerCore.Models
+namespace YTPlaylistOrganizerCore.Data
 {
     public class UserData
     {

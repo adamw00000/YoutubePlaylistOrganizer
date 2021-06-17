@@ -21,9 +21,15 @@ namespace YTPlaylistOrganizerCore.Controllers
         }
         
         [HttpGet("LikedVideos")]
-        public async Task<IEnumerable<VideoData>> LikedVideos(string userId, string authCode, int maxResults)
+        public async Task<IEnumerable<VideoDto>> LikedVideos(string userId, string authCode, int maxResults)
         {
             return await _youtubeApiService.GetLikedVideos(userId, authCode, maxResults);
+        }
+        
+        [HttpGet("Playlists")]
+        public async Task<IEnumerable<PlaylistDto>> Playlists(string userId, string authCode)
+        {
+            return await _youtubeApiService.Playlists(userId, authCode);
         }
     }
 }

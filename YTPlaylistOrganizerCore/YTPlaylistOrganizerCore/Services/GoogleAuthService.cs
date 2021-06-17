@@ -12,7 +12,7 @@ using Google.Apis.Util;
 using Google.Apis.YouTube.v3;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
-using YTPlaylistOrganizerCore.Models;
+using YTPlaylistOrganizerCore.Data;
 using YTPlaylistOrganizerCore.Services.Interfaces;
 
 namespace YTPlaylistOrganizerCore.Services

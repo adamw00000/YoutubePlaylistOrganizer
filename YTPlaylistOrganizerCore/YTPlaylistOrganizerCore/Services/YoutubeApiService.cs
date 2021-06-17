@@ -31,11 +31,11 @@ namespace YTPlaylistOrganizerCore.Services
             return service;
         }
         
-        public async Task<IEnumerable<VideoData>> GetLikedVideos(string userId, string authCode, int maxResults)
+        public async Task<IEnumerable<VideoDto>> GetLikedVideos(string userId, string authCode, int maxResults)
         {
             var service = await GetApiInstance(userId, authCode);
             
-            var videos = new List<VideoData>();
+            var videos = new List<VideoDto>();
 
             var nextPageToken = "";
             while (nextPageToken != null)
@@ -50,9 +50,21 @@ namespace YTPlaylistOrganizerCore.Services
                 var videoResponse = await videoRequest.ExecuteAsync();
 
                 videos.AddRange(videoResponse.Items.Select(video =>
-                    new VideoData
                     {
-                        Name = video.Snippet.Title, ImageUrl = video.Snippet.Thumbnails.Default__.Url, Id = video.Id
+                        var thumbnails = video.Snippet.Thumbnails;
+                        var imageUrl = new []
+                        {
+                            thumbnails.Maxres, thumbnails.High, thumbnails.Medium, 
+                            thumbnails.Standard, thumbnails.Default__,
+                        }
+                            .Where(t => t != null)
+                            .Select(t => t.Url)
+                            .FirstOrDefault();
+
+                        return new VideoDto
+                        {
+                            Name = video.Snippet.Title, ImageUrl = imageUrl, Id = video.Id
+                        };
                     }
                 ));
 
@@ -61,6 +73,25 @@ namespace YTPlaylistOrganizerCore.Services
             }
 
             return videos;
+        }
+
+        public async Task<IEnumerable<PlaylistDto>> Playlists(string userId, string authCode)
+        {
+            var service = await GetApiInstance(userId, authCode);
+            
+            var playlists = new List<PlaylistDto>();
+
+            var playlistRequest = service.Playlists.List("snippet");
+            playlistRequest.Mine = true;
+            playlistRequest.MaxResults = 100;
+
+            var playlistResponse = await playlistRequest.ExecuteAsync();
+            
+            return playlistResponse.Items.Select(p => new PlaylistDto()
+            {
+                Id = p.Id,
+                Name = p.Snippet.Title
+            });
         }
     }
 }
