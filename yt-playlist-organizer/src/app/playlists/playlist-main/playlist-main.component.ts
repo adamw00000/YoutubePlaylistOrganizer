@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IPlaylist } from 'src/app/models/IPlaylist';
 import { IVideo } from 'src/app/models/IVideo';
+import { YoutubeService } from '../youtube.service';
 
 @Component({
   selector: 'app-playlist-main',
@@ -69,9 +70,10 @@ export class PlaylistMainComponent implements OnInit {
     },
   ]
 
-  constructor() { }
+  constructor(private ytService: YoutubeService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.videos = await this.ytService.getLikedVideos().toPromise()
   }
 
 }

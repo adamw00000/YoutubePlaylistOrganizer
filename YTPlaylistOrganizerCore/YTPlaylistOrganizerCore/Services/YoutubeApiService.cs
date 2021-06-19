@@ -43,7 +43,6 @@ namespace YTPlaylistOrganizerCore.Services
                 var videoRequest =
                     service.Videos.List(new Repeatable<string>(new List<string> {"snippet", "contentDetails"}));
                 videoRequest.MyRating = VideosResource.ListRequest.MyRatingEnum.Like;
-                // videoRequest.MaxResults = 10;
                 videoRequest.MaxResults = maxResults;
                 videoRequest.PageToken = nextPageToken;
 
@@ -78,8 +77,6 @@ namespace YTPlaylistOrganizerCore.Services
         public async Task<IEnumerable<PlaylistDto>> Playlists(string userId, string authCode)
         {
             var service = await GetApiInstance(userId, authCode);
-            
-            var playlists = new List<PlaylistDto>();
 
             var playlistRequest = service.Playlists.List("snippet");
             playlistRequest.Mine = true;
